@@ -4,7 +4,7 @@ Short notes on what changed. This is meant for humans skimming the repo — not 
 
 ### Docs
 
-- Interactive HTML documentation lives in **`documentation.html`** (renamed from `bot_spec.html` for clarity). Linked from the top of `README.md`.
+- Interactive HTML documentation is **`index.html`** (served as the default page on GitHub Pages; previously `documentation.html` / `bot_spec.html`). Linked from the top of `README.md`.
 
 ### v1.6 – `.env` first
 
