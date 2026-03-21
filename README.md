@@ -4,13 +4,13 @@ A Discord bot that automatically detects and converts social media links into em
 
 ### Documentation (HTML)
 
-This repository includes a **standalone documentation page**: [`documentation.html`](documentation.html). It describes configuration, architecture, security, workflows, and includes **Ctrl+K** search with in-page highlighting—open it in a browser (local file or hosted).
+This repository includes a **standalone documentation site** as [`index.html`](index.html) (configuration, architecture, security, workflows, **Ctrl+K** search, and in-page highlighting). Open it in a browser locally or host it with GitHub Pages.
 
 | How to view | |
 |-------------|---|
-| **Locally** | After cloning, open `documentation.html` in Chrome, Edge, or Firefox (double-click or drag the file into a window). |
-| **On GitHub** | From the repo file list, open [`documentation.html`](documentation.html). GitHub shows the source; for the interactive UI, clone/download and open locally, or use **GitHub Pages** (below). |
-| **GitHub Pages** (optional) | Repo **Settings → Pages**: source = default branch, folder **/** (root). Site URL: `https://YOUR_USERNAME.github.io/YOUR_REPO/documentation.html` |
+| **Locally** | After cloning, open `index.html` in Chrome, Edge, or Firefox (double-click or drag the file into a window). |
+| **On GitHub** | From the repo file list, open [`index.html`](index.html). GitHub shows the source; for the interactive UI, clone/download and open locally, or use **GitHub Pages** (below). |
+| **GitHub Pages** (optional) | Repo **Settings → Pages**: source = default branch, folder **/** (root). The site loads **`index.html`** automatically. Base URL: `https://YOUR_USERNAME.github.io/YOUR_REPO/` (or `.../index.html`). |
 
 ## Features
 
@@ -214,7 +214,7 @@ To find your Discord User ID:
 ```
 bot_twitterEmbeds/
 ├── sizzbedbot_V1.py           # Main bot file (safe to share if secrets stay out)
-├── documentation.html         # Interactive HTML docs (open in browser; optional GitHub Pages)
+├── index.html                 # Interactive HTML docs (open in browser; GitHub Pages default page)
 ├── private_config.example.py  # Optional local overrides (see README)
 ├── .env.example               # Template for `.env` (safe to commit)
 ├── keep_alive.py              # Keep-alive script (for hosting services)
