@@ -560,8 +560,8 @@
           <h3>1.2 Public repo safety</h3>
           <p>
             <code>sizzbedbot_V1.py</code> contains no embedded secrets. It is safe to publish alongside
-            <code>private_config.example.py</code> and <code>.env.example</code>. Never commit <code>.env</code>,
-            <code>private_config.py</code>, or real tokens.
+            <code>private_config.example.py</code>, <code>.env.example</code>, and this documentation file
+            (<code>index.html</code>). Never commit <code>.env</code>, <code>private_config.py</code>, or real tokens.
           </p>
         </section>
 
@@ -715,7 +715,7 @@ BEDBOT_CONTROL_TRUSTED_IDS=111111111111111111,222222222222222222</code></pre>
               <div class="label">Definition of Done</div>
               <ul>
                 <li>Manual test evidence in dev guild.</li>
-                <li>No token leakage in logs, commits, or <code>documentation.html</code> / docs snapshots.</li>
+                <li>No token leakage in logs, commits, or <code>index.html</code> / docs snapshots.</li>
                 <li>Rate limit + redaction behavior verified.</li>
               </ul>
             </div>
