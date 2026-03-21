@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Documentation — Discord Embed Bot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      color-scheme: dark light;
+      --bg: #070b14;
+      --bg-elevated: #0f172a;
+      --bg-soft: #1e293b;
+      --fg: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #22d3ee;
+      --accent-soft: rgba(56, 189, 248, 0.14);
+      --border: rgba(148, 163, 184, 0.24);
+      --code-bg: #020617;
+      --code-border: #1f2937;
+      --shadow: 0 18px 48px rgba(2, 6, 23, 0.6);
+      --nav-bg: rgba(15, 23, 42, 0.72);
+      --ok: #34d399;
+      --warn: #f59e0b;
+    }
+
+    body.light {
+      --bg: #f4f7fb;
+      --bg-elevated: #ffffff;
+      --bg-soft: #eef2f8;
+      --fg: #0f172a;
+      --muted: #475569;
+      --accent: #2563eb;
+      --accent-2: #0891b2;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --border: rgba(15, 23, 42, 0.14);
+      --code-bg: #0f172a;
+      --code-border: #0f172a;
+      --shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+      --nav-bg: rgba(255, 255, 255, 0.78);
+      --ok: #059669;
+      --warn: #b45309;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Inter, system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      color: var(--fg);
+      background: var(--bg);
+      min-height: 100vh;
+    }
+
+    /* —— Doc shell (bot-docs style: sidebar + content) —— */
+    .doc-app {
+      display: flex;
+      min-height: 100vh;
+      align-items: stretch;
+    }
+
+    .doc-sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      background: var(--bg-soft);
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 5;
+    }
+
+    .doc-sidebar-inner {
+      padding: 1.25rem 1rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 100%;
+    }
+
+    .doc-brand-kicker {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+    .doc-brand-title {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-top: 0.15rem;
+    }
+
+    .doc-search-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.65rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: var(--bg-elevated);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .doc-search-trigger:hover {
+      border-color: var(--accent);
+      color: var(--fg);
+    }
+    .doc-search-placeholder { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .doc-search-kbd {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      flex-shrink: 0;
+    }
+    .doc-search-kbd kbd {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 0.68rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      color: var(--muted);
+    }
+
+    .doc-nav-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.45rem;
+    }
+    .doc-nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .doc-nav li + li { margin-top: 0.1rem; }
+    .doc-nav a {
+      display: block;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      padding-left: 0.65rem;
+      margin-left: -2px;
+    }
+    .doc-nav a:hover {
+      color: var(--fg);
+      background: var(--accent-soft);
+    }
+
+    .doc-sidebar-foot { margin-top: auto; padding-top: 0.5rem; }
+    .doc-theme-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 0.65rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: var(--bg-elevated);
+      cursor: pointer;
+      width: 100%;
+      justify-content: center;
+    }
+    .doc-theme-btn:hover { color: var(--fg); }
+
+    .doc-main {
+      flex: 1;
+      min-width: 0;
+      max-width: 900px;
+      padding: 1.5rem 2rem 3rem;
+    }
+
+    .doc-hit-banner {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      padding: 0.65rem 0.9rem;
+      margin-bottom: 1.25rem;
+      border-radius: 10px;
+      border: 1px solid rgba(250, 204, 21, 0.45);
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.12), rgba(56, 189, 248, 0.08));
+      font-size: 0.86rem;
+      animation: doc-banner-in 0.35s ease;
+    }
+    .doc-hit-banner[hidden] { display: none !important; }
+    .doc-hit-banner-icon { font-size: 1rem; }
+    .doc-hit-banner-text { flex: 1; min-width: 12rem; color: var(--fg); }
+    .doc-hit-banner-text strong { color: var(--accent); font-weight: 600; }
+    .doc-hit-banner-dismiss {
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .doc-hit-banner-dismiss:hover { color: var(--fg); }
+    @keyframes doc-banner-in {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .doc-hero {
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .doc-breadcrumb {
+      margin: 0 0 0.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .doc-page-title {
+      margin: 0 0 0.5rem;
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .doc-lead {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-size: 0.98rem;
+      max-width: 65ch;
+    }
+
+    .header-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .badge {
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      border-radius: 6px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .badge--accent {
+      color: var(--accent);
+      border-color: rgba(56, 189, 248, 0.45);
+      background: var(--accent-soft);
+    }
+
+    .doc-hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .doc-content.doc-prose {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      padding: 1.5rem 1.65rem 1.75rem;
+      box-shadow: var(--shadow);
+    }
+
+    section {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+      scroll-margin-top: 1.25rem;
+    }
+    section:last-of-type { border-bottom: 0; margin-bottom: 0; padding-bottom: 0.25rem; }
+
+    .doc-prose h2 {
+      margin: 0 0 0.65rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.01em;
+    }
+    .doc-prose h3 {
+      margin: 1.1rem 0 0.45rem;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .doc-prose p, .doc-prose li { font-size: 0.94rem; color: var(--fg); }
+    .doc-prose p { margin: 0.4rem 0 0.65rem; opacity: 0.95; }
+    .doc-prose ul, .doc-prose ol { margin: 0.25rem 0 0.75rem 1.15rem; padding-left: 0.35rem; }
+
+    code {
+      border: 1px solid var(--code-border);
+      border-radius: 5px;
+      background: var(--code-bg);
+      color: #dbeafe;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.81rem;
+      padding: 0.08rem 0.3rem;
+    }
+
+    pre {
+      border: 1px solid var(--code-border);
+      border-radius: 10px;
+      background: #020617;
+      color: #e2e8f0;
+      padding: 0.82rem 1rem;
+      font-size: 0.8rem;
+      overflow: auto;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 0.65rem 0.75rem;
+    }
+    body.light .card {
+      background: rgba(241, 245, 249, 0.9);
+    }
+
+    .label {
+      margin-bottom: 0.2rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+    }
+
+    .callout {
+      margin: 0.5rem 0 0.8rem;
+      border: 1px solid rgba(56, 189, 248, 0.42);
+      background: linear-gradient(145deg, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.45));
+      border-radius: 12px;
+      padding: 0.64rem 0.78rem;
+      font-size: 0.88rem;
+    }
+    .callout strong { color: var(--accent); }
+
+    .status-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-right: 0.7rem;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot.ok { background: var(--ok); }
+    .dot.warn { background: var(--warn); }
+
+    .palette-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.55);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 11vh;
+      z-index: 100;
+    }
+    .palette-overlay.active { display: flex; }
+
+    .palette {
+      width: min(840px, calc(100vw - 1.2rem));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--bg-elevated);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .palette input {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+      color: var(--fg);
+      font-size: 0.95rem;
+      padding: 0.9rem 1rem;
+      outline: none;
+    }
+
+    .palette-hint {
+      padding: 0.45rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .palette-results {
+      max-height: 52vh;
+      overflow: auto;
+    }
+
+    .palette-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+      padding: 0.65rem 1rem;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+    }
+    .palette-item:last-child { border-bottom: 0; }
+    .palette-item.active,
+    .palette-item:hover { background: var(--accent-soft); }
+    .palette-item small { color: var(--muted); display: block; font-size: 0.75rem; }
+    .palette-item .title { font-size: 0.88rem; font-weight: 600; }
+    .palette-hit {
+      background: rgba(250, 204, 21, 0.35);
+      color: inherit;
+      border-radius: 3px;
+      padding: 0 0.06rem;
+    }
+
+    /* In-page search highlights (after jumping from palette) */
+    span.doc-search-hit {
+      background: linear-gradient(180deg, rgba(250, 204, 21, 0.55), rgba(250, 204, 21, 0.28));
+      color: inherit;
+      border-radius: 3px;
+      padding: 0.06rem 0.12rem;
+      box-decoration-break: clone;
+      animation: doc-hit-pulse 1.1s ease 1;
+    }
+    body.light span.doc-search-hit {
+      background: linear-gradient(180deg, rgba(250, 204, 21, 0.65), rgba(253, 224, 71, 0.35));
+    }
+    @keyframes doc-hit-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.65); }
+      40% { box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.2); }
+      100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+    }
+
+    @media (max-width: 960px) {
+      .doc-app { flex-direction: column; }
+      .doc-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+        max-height: none;
+      }
+      .doc-sidebar-inner { padding-bottom: 0.75rem; }
+      .doc-sidebar-foot { margin-top: 0; }
+      .doc-main { padding: 1rem 1.1rem 2rem; max-width: none; }
+    }
+    @media (max-width: 740px) {
+      .grid-two { grid-template-columns: minmax(0, 1fr); }
+      .doc-page-title { font-size: 1.45rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="doc-app">
+    <aside class="doc-sidebar" aria-label="Documentation navigation">
+      <div class="doc-sidebar-inner">
+        <div class="doc-brand">
+          <span class="doc-brand-kicker">Embed bot</span>
+          <span class="doc-brand-title">Documentation</span>
+        </div>
+        <button type="button" class="doc-search-trigger" id="quickSearchTrigger" aria-label="Search documentation">
+          <span class="doc-search-placeholder">Search documentation…</span>
+          <span class="doc-search-kbd"><kbd>Ctrl</kbd><kbd>K</kbd></span>
+        </button>
+        <nav class="doc-nav" id="docNav" aria-label="On this page">
+          <div class="doc-nav-label">On this page</div>
+          <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#config">Configuration</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#reliability">Reliability</a></li>
+            <li><a href="#ux">UX &amp; commands</a></li>
+            <li><a href="#security">Security</a></li>
+            <li><a href="#workflow">Workflow</a></li>
+            <li><a href="#future">Future work</a></li>
+          </ul>
+        </nav>
+        <div class="doc-sidebar-foot">
+          <button type="button" class="doc-theme-btn" id="modeToggle" aria-label="Toggle color theme">
+            <span id="modeIcon">🌙</span>
+            <span id="modeLabel">Dark</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="doc-main">
+      <div class="doc-hit-banner" id="docHitBanner" hidden role="status">
+        <span class="doc-hit-banner-icon" aria-hidden="true">🔍</span>
+        <span class="doc-hit-banner-text" id="docHitBannerText"></span>
+        <button type="button" class="doc-hit-banner-dismiss" id="docHitBannerDismiss">Clear highlights</button>
+      </div>
+
+      <header class="doc-hero">
+        <p class="doc-breadcrumb">Documentation</p>
+        <h1 class="doc-page-title">Discord Embed Bot</h1>
+        <p class="doc-lead">
+          Reference for the embed pipeline, management commands, and deployment. Implemented in
+          <code>sizzbedbot_V1.py</code>; optional <code>bedbotControl.py</code> for PM2 control.
+        </p>
+        <div class="header-badges">
+          <span class="badge badge--accent">Spec v2.1</span>
+          <span class="badge">Python · discord.py</span>
+          <span class="badge">Self-hosted</span>
+        </div>
+        <div class="doc-hero-meta">
+          <span class="status-inline"><span class="dot ok"></span> Stable</span>
+          <span class="status-inline"><span class="dot warn"></span> Roadmap: modular split</span>
+        </div>
+      </header>
+
+      <article class="doc-content doc-prose" id="specContent">
+        <section id="overview">
+          <h2>1. High-Level Overview</h2>
+          <p>
+            This bot detects social media links in guild channels and threads, then offers cleaner alternate embed formats
+            via reactions. It also includes moderation-safe management commands for diagnostics, invite handling, and audit visibility.
+          </p>
+          <h3>1.1 Core Responsibilities</h3>
+          <ul>
+            <li>Parse message text for platform URLs and map them to supported embed transformers.</li>
+            <li>Suppress default Discord embeds when replacement behavior is selected by users.</li>
+            <li>Provide guarded owner/admin management commands for info, invite status, and invite generation.</li>
+            <li>Enforce anti-abuse protections: rate limits, invite caps, and response redaction in channel-visible flows.</li>
+          </ul>
+          <div class="callout">
+            <strong>Design goal:</strong> Keep embed UX fast for normal users while treating admin and owner paths as
+            explicit, auditable, and failure-safe operations.
+          </div>
+          <h3>1.2 Public repo safety</h3>
+          <p>
+            <code>sizzbedbot_V1.py</code> contains no embedded secrets. It is safe to publish alongside
+            <code>private_config.example.py</code> and <code>.env.example</code>. Never commit <code>.env</code>,
+            <code>private_config.py</code>, or real tokens.
+          </p>
+        </section>
+
+        <section id="config">
+          <h2>2. Configuration & Environment</h2>
+          <h3>2.1 Primary: <code>.env</code> file</h3>
+          <p>
+            <code>python-dotenv</code> loads variables at startup. Use a committed <code>.env.example</code> as the template;
+            copy to <code>.env</code> locally (gitignored).
+          </p>
+          <pre><code>DISCORD_TOKEN=your_bot_token_here
+BOT_OWNER_ID=your_discord_user_id_here
+# Optional — only if you run bedbotControl.py (comma-separated user IDs, no spaces)
+BEDBOT_CONTROL_TRUSTED_IDS=111111111111111111,222222222222222222</code></pre>
+          <ul>
+            <li><code>DISCORD_TOKEN</code> — Discord API authentication for whichever script you run.</li>
+            <li><code>BOT_OWNER_ID</code> — your Discord user ID (not the bot’s), for owner-only paths in <code>sizzbedbot_V1.py</code>.</li>
+            <li><code>BEDBOT_CONTROL_TRUSTED_IDS</code> — who may use <code>/start</code>, <code>/restart</code>, <code>/shutdown</code> on the control bot.</li>
+          </ul>
+          <h3>2.2 Optional: <code>private_config.py</code></h3>
+          <p>
+            Gitignored copy of <code>private_config.example.py</code>. Use only if you want Python-side fallbacks when
+            something is not set in the environment.
+          </p>
+          <ul>
+            <li><strong>Token:</strong> environment <code>DISCORD_TOKEN</code> is read first; <code>private_config.DISCORD_TOKEN</code> is used only if env is empty.</li>
+            <li><strong>Owner ID:</strong> environment <code>BOT_OWNER_ID</code> wins when set to a non-zero value; otherwise <code>private_config.BOT_OWNER_ID</code>.</li>
+            <li><strong>Control IDs:</strong> environment <code>BEDBOT_CONTROL_TRUSTED_IDS</code> wins when non-empty; otherwise the list in <code>private_config</code>.</li>
+          </ul>
+          <h3>2.3 Companion script: <code>bedbotControl.py</code></h3>
+          <p>
+            Separate small bot for PM2 lifecycle commands. Shares the same token resolution as the main bot and reads
+            <code>BEDBOT_CONTROL_TRUSTED_IDS</code> from <code>.env</code> (or optional <code>private_config</code>).
+            If no trusted IDs are configured, control commands are effectively disabled.
+          </p>
+          <h3>2.4 Runtime Permissions</h3>
+          <div class="grid-two">
+            <div class="card">
+              <div class="label">Intents</div>
+              <ul>
+                <li><code>message_content</code> for URL detection.</li>
+                <li><code>guilds</code>, <code>messages</code>, <code>reactions</code> for command and reaction flow.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="label">Permissions</div>
+              <ul>
+                <li>Read/Send Messages, Read History, Add Reactions.</li>
+                <li>Embed Links, Attach Files, Send in Threads.</li>
+                <li>Manage Messages for embed suppression paths.</li>
+              </ul>
+            </div>
+          </div>
+          <p>Recommended invite permission integer: <code>277025516608</code>.</p>
+        </section>
+
+        <section id="architecture">
+          <h2>3. Architecture & Modules</h2>
+          <p>
+            The current implementation is monolithic but functionally layered for predictable ownership and future splitting.
+          </p>
+          <ul>
+            <li><strong>Config + State:</strong> env load, owner identity, in-memory caches, persistent JSON state.</li>
+            <li><strong>Helpers:</strong> duration formatting, rate-limit checks, invite tracking, safe mention wrappers.</li>
+            <li><strong>Command Surface:</strong> slash commands and mention aliases with owner/admin privilege boundaries.</li>
+            <li><strong>Embed Engine:</strong> platform detection and replacement transformation in message pipeline.</li>
+            <li><strong>Instagram URLs:</strong> detection supports instagram.com and common mirror hosts; query strings (e.g. tracking parameters) are not carried into generated mirror links — only the canonical <code>p/&lt;id&gt;</code> or <code>reel/&lt;id&gt;</code> path is used.</li>
+          </ul>
+        </section>
+
+        <section id="reliability">
+          <h2>4. Reliability & Persistence Model</h2>
+          <h3>4.1 Persisted Data</h3>
+          <ul>
+            <li><code>server_settings</code> tracks per-guild invite enablement.</li>
+            <li><code>invite_records</code> stores metadata for generated invites and auditing.</li>
+            <li><code>guild_invite_timestamps</code> supports per-guild anti-abuse enforcement.</li>
+          </ul>
+          <h3>4.2 Fault Handling</h3>
+          <ul>
+            <li>State serialization/deserialization errors are caught and logged without bot termination.</li>
+            <li>External request paths use fallback behavior where possible.</li>
+            <li>Ambiguous state defaults to safe reject behavior instead of permissive behavior.</li>
+          </ul>
+        </section>
+
+        <section id="ux">
+          <h2>5. UX & Command Behavior</h2>
+          <h3>5.1 Help and Discoverability</h3>
+          <p>
+            The help flow is split into embed usage, management capabilities, and command matrix, so users can find
+            practical actions quickly instead of reading a large wall of text.
+          </p>
+          <h3>5.2 Info and Redaction</h3>
+          <ul>
+            <li>Non-owner <code>/info</code> is current-server only and sent ephemerally.</li>
+            <li>Owner <code>/info</code> can inspect wider server scope, still ephemeral.</li>
+            <li>Channel-visible mention responses are constrained to current guild and redacted where needed.</li>
+          </ul>
+          <h3>5.3 Invite Generation Paths</h3>
+          <ul>
+            <li>Server view actions create limited-lifetime invites, DM first, and keep channel output safe.</li>
+            <li><code>/join</code> allows owner server selection and tracked invite creation.</li>
+            <li><code>@bot join</code> stays guild-scoped and follows the same tracked flow.</li>
+          </ul>
+        </section>
+
+        <section id="security">
+          <h2>6. Security & Abuse Protections</h2>
+          <h3>6.1 Rate Limiting</h3>
+          <ul>
+            <li>Per-user command buckets separate read-style and write-style actions.</li>
+            <li>Fast burst cooldown and hard cooldown reduce repeated spam pressure.</li>
+            <li>Owner bypass is explicit and intentionally scoped.</li>
+          </ul>
+          <h3>6.2 Invite Abuse Controls</h3>
+          <ul>
+            <li>Global and per-guild limits on invite creation for non-owners, with cool-down periods when thresholds are exceeded.</li>
+            <li>Per-guild timestamp tracking layered on top of global checks.</li>
+            <li>Owner-only reset paths for operational recovery.</li>
+          </ul>
+          <h3>6.3 Redaction Guarantees</h3>
+          <ul>
+            <li><code>AllowedMentions.none()</code> is used for potentially sensitive outputs.</li>
+            <li>Channel invite listings hide full user and URL details.</li>
+            <li>Full visibility paths remain owner-only and ephemeral.</li>
+          </ul>
+        </section>
+
+        <section id="workflow">
+          <h2>7. Developer Workflow</h2>
+          <h3>7.1 Local Dev Loop (Practical)</h3>
+          <ol>
+            <li>Create venv and install dependencies from <code>requirements.txt</code>.</li>
+            <li>Copy <code>.env.example</code> → <code>.env</code>; set <code>DISCORD_TOKEN</code> and <code>BOT_OWNER_ID</code> (and <code>BEDBOT_CONTROL_TRUSTED_IDS</code> if testing the control bot).</li>
+            <li>Run <code>python sizzbedbot_V1.py</code> in a dedicated test guild.</li>
+            <li>Validate slash sync, mention commands, and embed transforms against sample links (including Instagram links with query strings).</li>
+            <li>Run abuse scenarios: command bursts, invite caps, and cooldown resets.</li>
+          </ol>
+          <h3>7.2 Suggested Repo Workflow</h3>
+          <div class="grid-two">
+            <div class="card">
+              <div class="label">Branch Strategy</div>
+              <ul>
+                <li><code>feature/embeds-*</code> for platform handlers.</li>
+                <li><code>feature/mod-tools-*</code> for management UX.</li>
+                <li><code>hotfix/*</code> for production-safe critical patches.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="label">Definition of Done</div>
+              <ul>
+                <li>Manual test evidence in dev guild.</li>
+                <li>No token leakage in logs, commits, or <code>documentation.html</code> / docs snapshots.</li>
+                <li>Rate limit + redaction behavior verified.</li>
+              </ul>
+            </div>
+          </div>
+          <h3>7.3 Deploy Checklist (Render)</h3>
+          <ul>
+            <li>Configure <code>DISCORD_TOKEN</code> and <code>BOT_OWNER_ID</code> in the host dashboard (same names as <code>.env</code>).</li>
+            <li>Set start command to <code>python sizzbedbot_V1.py</code>.</li>
+            <li>Optionally mount persistent volume for longer invite-state retention.</li>
+            <li>Do not upload <code>private_config.py</code> unless your host supports secret files; prefer injected env vars.</li>
+          </ul>
+        </section>
+
+        <section id="future">
+          <h2>8. Extensibility & Future Work</h2>
+          <ul>
+            <li>Keep <code>README.md</code> and <code>CHANGES.md</code> aligned with config and behavior for operators.</li>
+            <li>Split into cogs: <code>embeds.py</code>, <code>management.py</code>, <code>security.py</code>.</li>
+            <li>Add tests for rate limiting, invite caps, and redaction output.</li>
+            <li>Move state persistence to SQLite/Postgres if long-term auditing is needed.</li>
+            <li>Introduce structured logging and command correlation IDs for easier support debugging.</li>
+          </ul>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <div class="palette-overlay" id="paletteOverlay" aria-hidden="true">
+    <div class="palette" role="dialog" aria-label="Search documentation">
+      <input id="paletteInput" type="text" autocomplete="off"
+        placeholder="Search headings and page text…" />
+      <div class="palette-hint">↑↓ to choose a section · Enter to go there and highlight your search · Esc to close</div>
+      <div class="palette-results" id="paletteResults"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const body = document.body;
+      const toggle = document.getElementById("modeToggle");
+      const icon = document.getElementById("modeIcon");
+      const label = document.getElementById("modeLabel");
+      const trigger = document.getElementById("quickSearchTrigger");
+      const overlay = document.getElementById("paletteOverlay");
+      const input = document.getElementById("paletteInput");
+      const resultsEl = document.getElementById("paletteResults");
+      const searchableRoot = document.getElementById("specContent");
+      const docHitBanner = document.getElementById("docHitBanner");
+      const docHitBannerText = document.getElementById("docHitBannerText");
+      const docHitDismiss = document.getElementById("docHitBannerDismiss");
+      const docNav = document.getElementById("docNav");
+
+      let currentItems = [];
+      let activeIndex = -1;
+
+      function applyTheme(theme) {
+        const light = theme === "light";
+        body.classList.toggle("light", light);
+        icon.textContent = light ? "☀️" : "🌙";
+        label.textContent = light ? "Light" : "Dark";
+      }
+
+      function initTheme() {
+        const stored = window.localStorage.getItem("bot-spec-theme");
+        if (stored) return applyTheme(stored);
+        const prefersLight = window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: light)").matches;
+        applyTheme(prefersLight ? "light" : "dark");
+      }
+
+      toggle.addEventListener("click", function () {
+        const next = body.classList.contains("light") ? "dark" : "light";
+        applyTheme(next);
+        window.localStorage.setItem("bot-spec-theme", next);
+      });
+
+      function buildIndex() {
+        const entries = [];
+        const nodes = searchableRoot.querySelectorAll(
+          "section h2, section h3, section p, section li, section code, section pre"
+        );
+        nodes.forEach(function (node) {
+          const section = node.closest("section");
+          if (!section || !section.id) return;
+          const sectionTitleNode = section.querySelector("h2");
+          const sectionTitle = sectionTitleNode ? sectionTitleNode.textContent.trim() : section.id;
+          const text = node.textContent.replace(/\s+/g, " ").trim();
+          if (!text || text.length < 3) return;
+          const type = node.tagName.toLowerCase();
+          entries.push({
+            id: section.id,
+            sectionTitle: sectionTitle,
+            type: type,
+            text: text
+          });
+        });
+        return entries;
+      }
+
+      const index = buildIndex();
+
+      function escRegExp(value) {
+        return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
+
+      function highlightPaletteTitle(text, query) {
+        if (!query) return text;
+        const regex = new RegExp("(" + escRegExp(query) + ")", "ig");
+        return text.replace(regex, "<mark class=\"palette-hit\">$1</mark>");
+      }
+
+      function scoreEntry(entry, q) {
+        const t = entry.text.toLowerCase();
+        const section = entry.sectionTitle.toLowerCase();
+        let score = 0;
+        if (section.includes(q)) score += 16;
+        if (t.startsWith(q)) score += 12;
+        if (t.includes(q)) score += 8;
+        if (entry.type === "h2" || entry.type === "h3") score += 5;
+        return score;
+      }
+
+      function renderResults(query) {
+        const q = query.trim().toLowerCase();
+        if (!q) {
+          const defaults = index.filter(function (e) { return e.type === "h2" || e.type === "h3"; }).slice(0, 12);
+          currentItems = defaults.map(function (e) { return { entry: e, score: 1 }; });
+        } else {
+          currentItems = index
+            .map(function (entry) { return { entry: entry, score: scoreEntry(entry, q) }; })
+            .filter(function (x) { return x.score > 0; })
+            .sort(function (a, b) { return b.score - a.score; })
+            .slice(0, 22);
+        }
+
+        activeIndex = currentItems.length ? 0 : -1;
+        resultsEl.innerHTML = "";
+
+        if (!currentItems.length) {
+          resultsEl.innerHTML = "<button type='button' class='palette-item'><span class='title'>No matches</span><small>Try another keyword.</small></button>";
+          return;
+        }
+
+        currentItems.forEach(function (item, i) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "palette-item" + (i === activeIndex ? " active" : "");
+          btn.setAttribute("data-index", String(i));
+          btn.innerHTML =
+            "<span class='title'>" + highlightPaletteTitle(item.entry.text.slice(0, 110), q) + "</span>" +
+            "<small>" + item.entry.sectionTitle + " · " + item.entry.type + "</small>";
+          btn.addEventListener("mouseenter", function () {
+            activeIndex = i;
+            paintActive();
+          });
+          btn.addEventListener("click", function () {
+            jumpToSection(item.entry.id, input.value);
+          });
+          resultsEl.appendChild(btn);
+        });
+      }
+
+      function paintActive() {
+        const buttons = resultsEl.querySelectorAll(".palette-item");
+        buttons.forEach(function (btn, i) {
+          btn.classList.toggle("active", i === activeIndex);
+        });
+      }
+
+      function clearDocHighlights() {
+        searchableRoot.querySelectorAll("span.doc-search-hit").forEach(function (span) {
+          const parent = span.parentNode;
+          if (!parent) return;
+          parent.replaceChild(document.createTextNode(span.textContent), span);
+          parent.normalize();
+        });
+      }
+
+      function hideHitBanner() {
+        docHitBanner.hidden = true;
+        docHitBannerText.textContent = "";
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function showHitBanner(displayQuery, hitCount) {
+        const safe = displayQuery.trim();
+        if (!safe || hitCount === 0) {
+          hideHitBanner();
+          return;
+        }
+        docHitBannerText.innerHTML =
+          "Showing <strong>" + hitCount + "</strong> match" + (hitCount === 1 ? "" : "es") +
+          " for <strong>\u201c" + escapeHtml(safe) + "\u201d</strong> in this section.";
+        docHitBanner.hidden = false;
+      }
+
+      function highlightInElement(root, queryRaw) {
+        const q = (queryRaw || "").trim();
+        if (q.length < 2) return 0;
+        let count = 0;
+        const textNodes = [];
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+          acceptNode: function (node) {
+            if (!node.parentNode) return NodeFilter.FILTER_REJECT;
+            const t = node.parentNode.tagName;
+            if (t === "SCRIPT" || t === "STYLE") return NodeFilter.FILTER_REJECT;
+            if (node.parentNode.closest && node.parentNode.closest(".doc-search-hit")) {
+              return NodeFilter.FILTER_REJECT;
+            }
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        });
+        let cur;
+        while ((cur = walker.nextNode())) textNodes.push(cur);
+        for (var ti = textNodes.length - 1; ti >= 0; ti--) {
+          var textNode = textNodes[ti];
+          if (!textNode.parentNode) continue;
+          const text = textNode.textContent;
+          const matches = [];
+          const reLocal = new RegExp(escRegExp(q), "gi");
+          let m;
+          while ((m = reLocal.exec(text)) !== null) {
+            matches.push({ index: m.index, len: m[0].length });
+          }
+          if (!matches.length) continue;
+          const frag = document.createDocumentFragment();
+          var last = 0;
+          matches.forEach(function (hit) {
+            frag.appendChild(document.createTextNode(text.slice(last, hit.index)));
+            const span = document.createElement("span");
+            span.className = "doc-search-hit";
+            span.appendChild(document.createTextNode(text.substr(hit.index, hit.len)));
+            frag.appendChild(span);
+            count++;
+            last = hit.index + hit.len;
+          });
+          frag.appendChild(document.createTextNode(text.slice(last)));
+          textNode.parentNode.replaceChild(frag, textNode);
+        }
+        return count;
+      }
+
+      function applyHighlightsToSection(sectionEl, queryRaw) {
+        clearDocHighlights();
+        var q = (queryRaw || "").trim();
+        if (q.length < 2) return 0;
+        var n = highlightInElement(sectionEl, q);
+        if (n === 0 && q.indexOf(" ") !== -1) {
+          q.split(/\s+/).forEach(function (w) {
+            if (w.length >= 2) n += highlightInElement(sectionEl, w);
+          });
+        }
+        return n;
+      }
+
+      function jumpToSection(id, searchQuery) {
+        var query = typeof searchQuery === "string" ? searchQuery : "";
+        closePalette();
+        var section = document.getElementById(id);
+        if (!section) return;
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.setTimeout(function () {
+          var hits = applyHighlightsToSection(section, query);
+          if (query.trim().length >= 2) {
+            showHitBanner(query, hits);
+            var first = section.querySelector(".doc-search-hit");
+            if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+          } else {
+            hideHitBanner();
+          }
+        }, 280);
+      }
+
+      docHitDismiss.addEventListener("click", function () {
+        clearDocHighlights();
+        hideHitBanner();
+      });
+
+      if (docNav) {
+        docNav.querySelectorAll('a[href^="#"]').forEach(function (a) {
+          a.addEventListener("click", function () {
+            clearDocHighlights();
+            hideHitBanner();
+          });
+        });
+      }
+
+      function openPalette() {
+        overlay.classList.add("active");
+        overlay.setAttribute("aria-hidden", "false");
+        input.value = "";
+        renderResults("");
+        window.setTimeout(function () { input.focus(); }, 0);
+      }
+
+      function closePalette() {
+        overlay.classList.remove("active");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+
+      trigger.addEventListener("click", openPalette);
+      overlay.addEventListener("click", function (event) {
+        if (event.target === overlay) closePalette();
+      });
+
+      input.addEventListener("input", function () {
+        renderResults(input.value);
+      });
+
+      input.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          if (!currentItems.length) return;
+          activeIndex = (activeIndex + 1) % currentItems.length;
+          paintActive();
+        } else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          if (!currentItems.length) return;
+          activeIndex = (activeIndex - 1 + currentItems.length) % currentItems.length;
+          paintActive();
+        } else if (event.key === "Enter") {
+          event.preventDefault();
+          if (activeIndex >= 0 && currentItems[activeIndex]) {
+            var q = input.value;
+            jumpToSection(currentItems[activeIndex].entry.id, q);
+          }
+        } else if (event.key === "Escape") {
+          closePalette();
+        }
+      });
+
+      document.addEventListener("keydown", function (event) {
+        var key = event.key.toLowerCase();
+        var withCtrlOrCmd = event.ctrlKey || event.metaKey;
+        if (withCtrlOrCmd && key === "k") {
+          event.preventDefault();
+          openPalette();
+        } else if (key === "escape" && overlay.classList.contains("active")) {
+          closePalette();
+        }
+      });
+
+      initTheme();
+    })();
+  </script>
+</body>
+</html>
+
+

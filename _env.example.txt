@@ -1,0 +1,7 @@
+# Copy to `.env` and fill in. Never commit `.env`.
+
+DISCORD_TOKEN=your_bot_token_here
+BOT_OWNER_ID=your_discord_user_id_here
+
+# Optional: only for bedbotControl.py (comma-separated Discord user IDs)
+BEDBOT_CONTROL_TRUSTED_IDS=123456789012345678
