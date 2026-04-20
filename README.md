@@ -9,8 +9,8 @@ This repository includes a **standalone documentation site** as [`index.html`](i
 | How to view | |
 |-------------|---|
 | **Locally** | After cloning, open `index.html` in Chrome, Edge, or Firefox (double-click or drag the file into a window). |
-| **On GitHub** | From the repo file list, open [`index.html`](index.html). GitHub shows the source; for the interactive UI, clone/download and open locally, or use **GitHub Pages** (below). |
-| **GitHub Pages** (optional) | Repo **Settings → Pages**: source = default branch, folder **/** (root). The site loads **`index.html`** automatically. Base URL: `https://YOUR_USERNAME.github.io/YOUR_REPO/` (or `.../index.html`). |
+| **On GitHub** | From the repo file list, open [`index.html`](https://relishablez.github.io/discord_SocialsEmbedder). GitHub shows the source; for the interactive UI, clone/download and open locally, or use **GitHub Pages** (below). |
+| **GitHub Pages** (optional) | Repo **Settings → Pages**: source = default branch, folder **/** (root). The site loads **`index.html`** automatically. Base URL: `https://relishablez.github.io/discord_SocialsEmbedder` (or `.../index.html`). |
 
 ## Features
 
@@ -221,6 +221,7 @@ bot_twitterEmbeds/
 ├── requirements.txt           # Python dependencies
 ├── .env                       # Environment variables (create this; gitignored)
 └── README.md                  # This file
+
 ```
 
 ## Troubleshooting
