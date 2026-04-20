@@ -6,6 +6,12 @@ Short notes on what changed. This is meant for humans skimming the repo — not 
 
 - Interactive HTML documentation is **`index.html`** (served as the default page on GitHub Pages; previously `documentation.html` / `bot_spec.html`). Linked from the top of `README.md`.
 
+### v1.7 – Instagram reels support
+
+- **Instagram reels links** are now properly detected and processed
+- Updated regex pattern to handle `/reels/` URLs (e.g., `https://www.instagram.com/reels/DVjl2FxD3fd/`)
+- Reels use the same embed options as regular Instagram posts (KK and UU formats)
+
 ### v1.6 – `.env` first
 
 - **Owner ID:** `BOT_OWNER_ID` in `.env` is read before optional `private_config.py`.
