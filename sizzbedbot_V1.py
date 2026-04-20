@@ -379,7 +379,7 @@ X_LINK_REGEX = r'https?://(?:www\.)?x\.com(/[\w\d_]+/status/(\d+))?'
 # Instagram + common mirror hosts; optional ?query (e.g. ?igsh=…) matched but not kept in rebuilt links
 INSTAGRAM_LINK_REGEX = re.compile(
     r"https?://(?:www\.)?(?:instagram\.com|kkinstagram\.com|uuinstagram\.com)"
-    r"/(p|reel)/([\w-]+)"
+    r"/(p|reels)/([\w-]+)"
     r"(?:[/?#][^\s]*)?",
     re.IGNORECASE,
 )
